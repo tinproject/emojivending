@@ -1,0 +1,8 @@
+include *.rst
+graft myproject
+prune myproject/media
+prune myproject/static_root
+exclude *.yml
+exclude manage.py
+global-exclude *.py[co]
+global-exclude __pycache__
