@@ -11,7 +11,7 @@ services:
     working_dir: "/opt/app"
     entrypoint: '/bin/bash -c "pip install -e . && vending-machine run -h 0.0.0.0 -p 8080"'
     environment:
-      FLASK_DEBUG: 1
+      FLASK_DEBUG: ${FLASK_DEBUG:-0}
 
   grafana:
     image: "grafana/grafana"
@@ -19,6 +19,9 @@ services:
       - "3000:3000"
     volumes:
     - "./.volumes/grafana/data:/var/lib/grafana"
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_BASIC_ENABLED: "false"
 
   prometheus:
     image: "prom/prometheus"

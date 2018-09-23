@@ -18,3 +18,11 @@ up:
 .PHONY:
 down:
 	docker-compose down
+
+.PHONY:
+run:
+	docker-compose up -d
+
+.PHONY:
+run-debug:
+	FLASK_DEBUG=1 docker-compose up
