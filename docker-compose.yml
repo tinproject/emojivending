@@ -1,0 +1,32 @@
+---
+version: '3.5'
+services:
+  server:
+    image: "python:3.7"
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./:/opt/app"
+      - "./.volumes/server_home:/root"
+    working_dir: "/opt/app"
+    entrypoint: '/bin/bash -c "pip install -e . && vending-machine run -h 0.0.0.0 -p 8080"'
+
+  grafana:
+    image: "grafana/grafana"
+    ports:
+      - "3000:3000"
+    volumes:
+    - "./.volumes/grafana/data:/var/lib/grafana"
+
+  prometheus:
+    image: "prom/prometheus"
+    ports:
+    - "9090:9090"
+    volumes:
+      - "./.volumes/prometheus:/prometheus"
+      - "./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+
+  node_exporter:
+    image: "prom/node-exporter"
+    ports:
+      - "9100:9100"
