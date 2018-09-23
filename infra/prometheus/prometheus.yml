@@ -19,3 +19,11 @@ scrape_configs:
           - 'grafana:3000'
         labels:
           milabel: grafana
+
+  - job_name: vending-app
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+          - 'server:8080'
+        labels:
+          app: vending
