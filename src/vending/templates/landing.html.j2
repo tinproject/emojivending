@@ -10,50 +10,17 @@
 {% block content %}
 
     <form class="" id="request-emoji" action="request-emoji" method="post">
-
+        {{ form.hidden_tag() }}
         <div class="row btn-group-toggle btn-lg align-items-center" data-toggle="buttons">
+            {% for category in categories %}
             <div class="col-6">
-
-                <label class="btn btn-block btn-outline-dark btn-secondary">
-                    <input class="invisible" type="radio" name="options" id="option1" autocomplete="off">
-                    <h1>😊</h1><h5>category</h5>
-                </label>
-            </div>
-            <div class="col-6">
-                <label class="btn btn-block btn-outline-dark btn-secondary">
-                    <input class="invisible"type="radio" name="options" id="option2" autocomplete="off">
-                    <h1>😊</h1><h5>category</h5>
+                <label class="btn btn-block btn-outline-dark btn-secondary{% if category == default_category %} active{% endif %}">
+                    <input class="invisible" type="radio" name="{{ form.category.name }}" value="{{ category[0] }}" id="{{ form.category.id }}" autocomplete="off"{% if category == default_category %} checked{% endif %}>
+                    <h1>{{ category[1] }}</h1><h5>category</h5>
 
                 </label>
             </div>
-            <div class="col-6">
-                <label class="btn btn-block btn-outline-dark btn-secondary">
-                    <input class="invisible"type="radio" name="options" id="option3" autocomplete="off">
-                    <h1>😊</h1><h5>category</h5>
-
-                </label>
-            </div>
-            <div class="col-6">
-                <label class="btn btn-block btn-outline-dark btn-secondary">
-                    <input class="invisible"type="radio" name="options" id="option4" autocomplete="off">
-                    <h1>😊</h1><h5>category</h5>
-
-                </label>
-            </div>
-            <div class="col-6">
-                <label class="btn btn-block btn-outline-dark btn-secondary">
-                    <input class="invisible"type="radio" name="options" id="option5" autocomplete="off">
-                    <h1>😊</h1><h5>category</h5>
-
-                </label>
-            </div>
-            <div class="col-6">
-                <label class="btn btn-block btn-outline-dark btn-secondary active">
-                    <input class="invisible"type="radio" name="options" id="option6" autocomplete="off" checked>
-                    <h1>😊</h1><h5>category</h5>
-
-                </label>
-            </div>
+            {% endfor %}
         </div>
         <div class="row">
             <div class="col-10 offset-1">
