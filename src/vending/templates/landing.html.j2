@@ -1,0 +1,65 @@
+{% extends "base.html.j2" %}
+
+
+{% block title %}Obten tu Emoji{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+    <form class="" id="request-emoji" action="request-emoji" method="post">
+
+        <div class="row btn-group-toggle btn-lg align-items-center" data-toggle="buttons">
+            <div class="col-6">
+
+                <label class="btn btn-block btn-outline-dark btn-secondary">
+                    <input class="invisible" type="radio" name="options" id="option1" autocomplete="off">
+                    <h1>😊</h1><h5>category</h5>
+                </label>
+            </div>
+            <div class="col-6">
+                <label class="btn btn-block btn-outline-dark btn-secondary">
+                    <input class="invisible"type="radio" name="options" id="option2" autocomplete="off">
+                    <h1>😊</h1><h5>category</h5>
+
+                </label>
+            </div>
+            <div class="col-6">
+                <label class="btn btn-block btn-outline-dark btn-secondary">
+                    <input class="invisible"type="radio" name="options" id="option3" autocomplete="off">
+                    <h1>😊</h1><h5>category</h5>
+
+                </label>
+            </div>
+            <div class="col-6">
+                <label class="btn btn-block btn-outline-dark btn-secondary">
+                    <input class="invisible"type="radio" name="options" id="option4" autocomplete="off">
+                    <h1>😊</h1><h5>category</h5>
+
+                </label>
+            </div>
+            <div class="col-6">
+                <label class="btn btn-block btn-outline-dark btn-secondary">
+                    <input class="invisible"type="radio" name="options" id="option5" autocomplete="off">
+                    <h1>😊</h1><h5>category</h5>
+
+                </label>
+            </div>
+            <div class="col-6">
+                <label class="btn btn-block btn-outline-dark btn-secondary active">
+                    <input class="invisible"type="radio" name="options" id="option6" autocomplete="off" checked>
+                    <h1>😊</h1><h5>category</h5>
+
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10 offset-1">
+                <button type="submit" class="btn btn-lg btn-block btn-primary">¡Obten tu Emoji!</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

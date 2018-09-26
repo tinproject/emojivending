@@ -1,0 +1,38 @@
+{% extends "base.html.j2" %}
+
+
+{% block title %}Aquí tienes tu Emoji{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+    <br>
+    <h3 class="text-center">¡Aquí tienes tu Emoji!</h3>
+    <br>
+    <div class="row">
+        <div class="col-8 offset-2 border border-secondary rounded text-center align-items-center">
+            <br>
+            <br>
+            <h1 class="text-lg-center">😃</h1>
+            <br>
+            <br>
+        </div>
+    </div>
+
+    <br>
+    <form class="" id="send-feedback" action="send-feedback" method="post">
+        <h5 class="text-center">¿Estas satisfecho con tu Emoji?</h5>
+        <div class="row">
+            <div class="col-5 offset-1">
+                <button id="yes-btn" type="submit" class="btn btn-block btn-lg btn-success">SI</button>
+            </div>
+            <div class="col-5">
+                <button id="no-btn" type="submit" class="btn btn-block btn-lg btn-danger">NO</button>
+            </div>
+        </div>
+        </div>
+    </form>
+
+{% endblock %}
