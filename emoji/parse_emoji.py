@@ -21,7 +21,7 @@ def parse_file():
         line = line.strip()
 
         if line.startswith('# group: '):
-            group = line[9:]
+            continue
         elif line.startswith('# subgroup: '):
             subgroup = line[12:]
         elif line.startswith('#'):
@@ -30,18 +30,17 @@ def parse_file():
             continue
         elif line:
             code = line.split(';')[0].rstrip()
-            grp = codepoints.get(group, {})
-            codepoints[group] = grp
-            sbgrp = grp.get(subgroup, [])
-            codepoints[group][subgroup] = sbgrp
+            sbgrp = codepoints.get(subgroup, [])
+            codepoints[subgroup] = sbgrp
 
             codepoint = "".join([chr(int(c, 16)) for c in code.split(" ")])
-            sbgrp.append(codepoint)
-    #print(codepoints)
 
-    for g in codepoints.keys():
-        for sg in codepoints[g].keys():
-            print("{:20}{}".format(g, sg))
+            description = line.split('#')[1].strip().split()[1:]
+            name = " ".join(description)
+
+            sbgrp.append((codepoint, name))
+
+    print(codepoints)
 
     with open(path + "emoji-test.json", "wt") as f:
         json.dump(codepoints, f)
