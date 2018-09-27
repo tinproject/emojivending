@@ -6,3 +6,12 @@ venv/
 .pytest_cache
 
 .volumes
+
+emoji/emoji-test.json
+emoji/emoji-test.txt
+
+src/vending/data/*.json
+!src/vending/data/.gitkeep
+
+src/vending/static/*
+!src/vending/static/.gitkeep

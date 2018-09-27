@@ -4,3 +4,4 @@ global-exclude __pycache__
 
 recursive-include src/vending/templates *
 recursive-include src/vending/static *
+recursive-include src/vending/data *.json

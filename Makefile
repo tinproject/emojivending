@@ -26,3 +26,20 @@ run:
 .PHONY:
 run-debug:
 	FLASK_DEBUG=1 docker-compose up
+
+./emoji/emoji-test.txt:
+	wget https://unicode.org/Public/emoji/11.0/emoji-test.txt -O ./emoji/emoji-test.txt
+
+.PHONY:
+get-emoji-data: ./emoji/emoji-test.txt
+	python ./emoji/parse_emoji.py
+	cp ./emoji/emoji-test.json ./src/vending/data/emoji-test.json
+
+./src/vending/static/NotoColorEmoji.ttf:
+	wget https://github.com/googlei18n/noto-emoji/raw/master/fonts/NotoColorEmoji.ttf -O ./src/vending/static/NotoColorEmoji.ttf
+
+.PHONY:
+get-statics: ./src/vending/static/NotoColorEmoji.ttf
+
+.PHONY:
+setup: get-emoji-data get-statics
