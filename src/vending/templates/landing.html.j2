@@ -12,11 +12,11 @@
     <form class="" id="request-emoji" action="request-emoji" method="post">
         {{ form.hidden_tag() }}
         <div class="row btn-group-toggle btn-lg align-items-center" data-toggle="buttons">
-            {% for category in categories %}
+            {% for cat_key, cat_value in categories.items() %}
             <div class="col-6">
-                <label class="btn btn-block btn-outline-dark btn-secondary{% if category == default_category %} active{% endif %}">
-                    <input class="invisible small" type="radio" name="{{ form.category.name }}" value="{{ category[0] }}" id="{{ form.category.id }}" autocomplete="off"{% if category == default_category %} checked{% endif %}>
-                    <h1 class="emoji">{{ category[1] }}</h1><h5>category</h5>
+                <label class="btn btn-block btn-outline-dark btn-secondary{% if cat_key == default_category %} active{% endif %}">
+                    <input class="invisible small" type="radio" name="{{ form.category.name }}" value="{{ cat_key }}" id="{{ form.category.id }}" autocomplete="off"{% if cat_key == default_category %} checked{% endif %}>
+                    <h1 class="emoji">{{ cat_value.icon }}</h1><h5>{{ cat_value.name }}</h5>
 
                 </label>
             </div>

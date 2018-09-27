@@ -2,19 +2,11 @@ from flask_wtf import FlaskForm
 from wtforms.fields import StringField
 from wtforms.validators import AnyOf
 
-
-category = {
-    "o1": "😀",
-    "o2": "☹",
-    "o3": "😈",
-    "o4": "😺",
-    "o5": "🐵",
-    "o6": "🏴",
-}
+from .emoji import categories
 
 
 class GetEmojiForm(FlaskForm):
-    category = StringField(label="category", validators=[AnyOf(list(category.keys()))])
+    category = StringField(label="category", validators=[AnyOf(list(categories.keys()))])
 
 
 class SendFeedbackForm(FlaskForm):

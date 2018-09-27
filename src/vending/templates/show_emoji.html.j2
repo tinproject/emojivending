@@ -14,9 +14,9 @@
 
 
 {% block content %}
-{% for subgroup, emojis in emoji_data.items() %}
-    <h1>{{ subgroup }}</h1>
-    {% for emoji in emojis %}
+{% for subgroup, items in emoji_data.items() %}
+    <h1>{{ items.name }}</h1>
+    {% for emoji in items.emojis %}
         <icon class="emoji-small" title="{{ emoji[1] }}">{{ emoji[0] }}</icon>
     {% endfor %}
 {% endfor %}

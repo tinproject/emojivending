@@ -1,10 +1,11 @@
-import json
+import random
 
 from flask import Flask, Response, render_template, redirect, url_for, abort
 from flask_wtf.csrf import CSRFProtect
 import prometheus_client
 
-from .forms import GetEmojiForm, SendFeedbackForm, category
+from .emoji import categories
+from .forms import GetEmojiForm, SendFeedbackForm
 
 csrf = CSRFProtect()
 
@@ -21,8 +22,8 @@ def create_app():
     def landing():
         form = GetEmojiForm()
 
-        categories = [(k, v) for k, v in category.items()]
-        default_category = categories[-1]
+        # Choose a random category as default
+        default_category = random.choice(list(categories.keys()))
 
         return render_template("landing.html.j2", form=form, categories=categories, default_category=default_category)
 
@@ -34,11 +35,13 @@ def create_app():
             print(emoji_form.is_submitted())
             abort(500)
 
+        category = emoji_form.category.data
+
         # Cook Emoji
-        emoji = "🐼"
+        emoji = random.choice(categories[category]["emojis"])
 
         form = SendFeedbackForm()
-        return render_template("emoji.html.j2", form=form, emoji=emoji)
+        return render_template("give_emoji.html.j2", form=form, emoji=emoji)
 
     @app.route('/send-feedback', methods=['POST'])
     def send_feedback():
@@ -57,10 +60,6 @@ def create_app():
 
     @app.route('/emojis')
     def show_emoji():
-        file = "/home/agustin/CODE/projects/talks/instrumenta/src/vending/data/emoji-test.json"
-        print(file)
-        with open(file, "rt") as f:
-            emoji_data = json.load(f)
-        return render_template("show_emoji.html.j2", emoji_data=emoji_data)
+        return render_template("show_emoji.html.j2", emoji_data=categories)
 
     return app
