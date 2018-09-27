@@ -43,7 +43,7 @@ def parse_file():
     print(codepoints)
 
     with open(path + "emoji-test.json", "wt") as f:
-        json.dump(codepoints, f)
+        json.dump(codepoints, f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
