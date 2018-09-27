@@ -15,8 +15,8 @@
             {% for category in categories %}
             <div class="col-6">
                 <label class="btn btn-block btn-outline-dark btn-secondary{% if category == default_category %} active{% endif %}">
-                    <input class="invisible" type="radio" name="{{ form.category.name }}" value="{{ category[0] }}" id="{{ form.category.id }}" autocomplete="off"{% if category == default_category %} checked{% endif %}>
-                    <h1>{{ category[1] }}</h1><h5>category</h5>
+                    <input class="invisible small" type="radio" name="{{ form.category.name }}" value="{{ category[0] }}" id="{{ form.category.id }}" autocomplete="off"{% if category == default_category %} checked{% endif %}>
+                    <h1 class="emoji">{{ category[1] }}</h1><h5>category</h5>
 
                 </label>
             </div>

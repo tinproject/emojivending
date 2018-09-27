@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, Response, render_template, redirect, url_for, abort
 from flask_wtf.csrf import CSRFProtect
 import prometheus_client
@@ -52,5 +54,13 @@ def create_app():
         exposition_text = prometheus_client.generate_latest()
 
         return Response(exposition_text, content_type=prometheus_client.CONTENT_TYPE_LATEST)
+
+    @app.route('/emojis')
+    def show_emoji():
+        file = "/home/agustin/CODE/projects/talks/instrumenta/src/vending/data/emoji-test.json"
+        print(file)
+        with open(file, "rt") as f:
+            emoji_data = json.load(f)
+        return render_template("show_emoji.html.j2", emoji_data=emoji_data)
 
     return app
