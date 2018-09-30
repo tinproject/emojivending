@@ -1,6 +1,6 @@
 from flask import Flask, Response, render_template, redirect, url_for, abort
 from flask_wtf.csrf import CSRFProtect
-import prometheus_client
+import prometheus_client as prom
 
 from .emoji import categories, get_random_category, request_emoji
 from .forms import GetEmojiForm, SendFeedbackForm
@@ -16,11 +16,22 @@ def create_app():
 
     csrf.init_app(app)
 
+    # Metric definition
+    venging_emoji_requested_counter = prom.Counter("vending_emoji_requested_total", "Requested emoji.",
+                                                   ["category_id", "category_name"])
+    venging_emoji_delivered_counter = prom.Counter("vending_emoji_delivered_total", "Delivered emoji.",
+                                                   ["category_id", "category_name"])
+    venging_emoji_feedback_received_counter = prom.Counter("venging_emoji_feedback_received_total",
+                                                           "Number of feedback received for emoji.",
+                                                           ["feedback"])
+    vending_emoji_overall_satisfaction_index_gauge = prom.Gauge("vending_emoji_overall_satisfaction_index",
+                                                                "Client overall satisfaction index")
+
     @app.route('/metrics')
     def metrics_endpoint():
-        exposition_text = prometheus_client.generate_latest()
+        exposition_text = prom.generate_latest()
 
-        return Response(exposition_text, content_type=prometheus_client.CONTENT_TYPE_LATEST)
+        return Response(exposition_text, content_type=prom.CONTENT_TYPE_LATEST)
 
     @app.route('/')
     def landing():
@@ -39,8 +50,15 @@ def create_app():
             print(emoji_form.is_submitted())
             abort(500)
 
+        category_id = emoji_form.category.data
+        category_name = categories[category_id]["name"]
+
+        venging_emoji_requested_counter.labels(category_id=category_id, category_name=category_name).inc()
+
         # Cook Emoji
-        emoji = request_emoji(emoji_form.category.data)
+        emoji = request_emoji(category_id)
+
+        venging_emoji_delivered_counter.labels(category_id=category_id, category_name=category_name).inc()
 
         form = SendFeedbackForm()
         return render_template("give_emoji.html.j2", form=form, emoji=emoji)
@@ -51,6 +69,17 @@ def create_app():
 
         if not form.validate_on_submit():
             abort(500)
+
+        feedback = form.feedback.data
+
+        if feedback == "yes":
+            venging_emoji_feedback_received_counter.labels(feedback=feedback).inc()
+            vending_emoji_overall_satisfaction_index_gauge.inc()
+        elif feedback == "no":
+            venging_emoji_feedback_received_counter.labels(feedback=feedback).inc()
+            vending_emoji_overall_satisfaction_index_gauge.dec()
+        else:
+            raise ValueError("Not a valid feedback response")
 
         return redirect(url_for("landing"))
 
