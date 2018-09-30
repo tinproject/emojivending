@@ -1,10 +1,8 @@
-import random
-
 from flask import Flask, Response, render_template, redirect, url_for, abort
 from flask_wtf.csrf import CSRFProtect
 import prometheus_client
 
-from .emoji import categories
+from .emoji import categories, get_random_category, request_emoji
 from .forms import GetEmojiForm, SendFeedbackForm
 
 csrf = CSRFProtect()
@@ -18,12 +16,18 @@ def create_app():
 
     csrf.init_app(app)
 
+    @app.route('/metrics')
+    def metrics_endpoint():
+        exposition_text = prometheus_client.generate_latest()
+
+        return Response(exposition_text, content_type=prometheus_client.CONTENT_TYPE_LATEST)
+
     @app.route('/')
     def landing():
         form = GetEmojiForm()
 
         # Choose a random category as default
-        default_category = random.choice(list(categories.keys()))
+        default_category = get_random_category()
 
         return render_template("landing.html.j2", form=form, categories=categories, default_category=default_category)
 
@@ -35,10 +39,8 @@ def create_app():
             print(emoji_form.is_submitted())
             abort(500)
 
-        category = emoji_form.category.data
-
         # Cook Emoji
-        emoji = random.choice(categories[category]["emojis"])
+        emoji = request_emoji(emoji_form.category.data)
 
         form = SendFeedbackForm()
         return render_template("give_emoji.html.j2", form=form, emoji=emoji)
@@ -51,12 +53,6 @@ def create_app():
             abort(500)
 
         return redirect(url_for("landing"))
-
-    @app.route('/metrics')
-    def metrics_endpoint():
-        exposition_text = prometheus_client.generate_latest()
-
-        return Response(exposition_text, content_type=prometheus_client.CONTENT_TYPE_LATEST)
 
     @app.route('/emojis')
     def show_emoji():

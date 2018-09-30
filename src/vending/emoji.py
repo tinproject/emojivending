@@ -1,5 +1,6 @@
 from importlib.resources import open_text
 import json
+import random
 
 from . import data
 
@@ -43,3 +44,12 @@ categories["cat6"] = {
     "icon": "🇪🇸",
     "emojis": emojis["country-flag"]
 }
+
+
+def get_random_category():
+    return random.choice(list(categories.keys()))
+
+
+def request_emoji(category):
+    emoji = random.choice(categories[category]["emojis"])
+    return emoji
