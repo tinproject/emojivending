@@ -14,6 +14,9 @@ def create_app():
     app.config['WTF_CSRF_SECRET_KEY'] = "secret_key"
     app.config['SECRET_KEY'] = "secret_key"
 
+    # disable csrf to allow locust traffic
+    app.config['WTF_CSRF_ENABLED'] = False
+
     csrf.init_app(app)
 
     # Metric definition
