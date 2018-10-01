@@ -7,6 +7,26 @@ from .forms import GetEmojiForm, SendFeedbackForm
 
 csrf = CSRFProtect()
 
+# Metrics definition
+vending_emoji_front_watched_counter = prom.Counter(
+    "vending_emoji_front_watched_total",
+    "Vending machine emoji watched.")
+venging_emoji_requested_counter = prom.Counter(
+    "vending_emoji_requested_total",
+    "Requested emoji.",
+    ["category_id", "category_name"])
+venging_emoji_delivered_counter = prom.Counter(
+    "vending_emoji_delivered_total",
+    "Delivered emoji.",
+    ["category_id", "category_name"])
+venging_emoji_feedback_received_counter = prom.Counter(
+    "vending_emoji_feedback_received_total",
+    "Number of feedback received for emoji.",
+    ["feedback"])
+vending_emoji_overall_satisfaction_index_gauge = prom.Gauge(
+    "vending_emoji_overall_satisfaction_index",
+    "Client overall satisfaction index")
+
 
 def create_app():
     app = Flask(__name__)
@@ -19,17 +39,6 @@ def create_app():
 
     csrf.init_app(app)
 
-    # Metric definition
-    venging_emoji_requested_counter = prom.Counter("vending_emoji_requested_total", "Requested emoji.",
-                                                   ["category_id", "category_name"])
-    venging_emoji_delivered_counter = prom.Counter("vending_emoji_delivered_total", "Delivered emoji.",
-                                                   ["category_id", "category_name"])
-    venging_emoji_feedback_received_counter = prom.Counter("vending_emoji_feedback_received_total",
-                                                           "Number of feedback received for emoji.",
-                                                           ["feedback"])
-    vending_emoji_overall_satisfaction_index_gauge = prom.Gauge("vending_emoji_overall_satisfaction_index",
-                                                                "Client overall satisfaction index")
-
     @app.route('/metrics')
     def metrics_endpoint():
         exposition_text = prom.generate_latest()
@@ -39,6 +48,8 @@ def create_app():
     @app.route('/')
     def landing():
         form = GetEmojiForm()
+
+        vending_emoji_front_watched_counter.inc()
 
         # Choose a random category as default
         default_category = get_random_category()
