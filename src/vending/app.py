@@ -24,7 +24,7 @@ def create_app():
                                                    ["category_id", "category_name"])
     venging_emoji_delivered_counter = prom.Counter("vending_emoji_delivered_total", "Delivered emoji.",
                                                    ["category_id", "category_name"])
-    venging_emoji_feedback_received_counter = prom.Counter("venging_emoji_feedback_received_total",
+    venging_emoji_feedback_received_counter = prom.Counter("vending_emoji_feedback_received_total",
                                                            "Number of feedback received for emoji.",
                                                            ["feedback"])
     vending_emoji_overall_satisfaction_index_gauge = prom.Gauge("vending_emoji_overall_satisfaction_index",

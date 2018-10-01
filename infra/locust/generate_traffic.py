@@ -18,8 +18,8 @@ class BuyEmoji(TaskSet):
 
     @task(40)
     def send_feedback(self):
-        # simulate a 65% of possitive feedback
-        feedback = "yes" if random.random() <= 0.5 else "no"
+        # simulate a 50% of possitive feedback
+        feedback = "yes" if random.random() >= 0.5 else "no"
         data = {
             "feedback": feedback
         }

@@ -12,13 +12,16 @@ scrape_configs:
           - 'node_exporter:9100'
         labels:
           milabel: exporter
-  - job_name: dashboards
+  - job_name: grafana
     scrape_interval: 10s
     static_configs:
       - targets:
           - 'grafana:3000'
-        labels:
-          milabel: grafana
+  - job_name: prometheus
+    scrape_interval: 10s
+    static_configs:
+      - targets:
+          - 'prometheus:9090'
 
   - job_name: vending-app
     scrape_interval: 5s
