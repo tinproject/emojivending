@@ -35,3 +35,15 @@ services:
     image: "prom/node-exporter"
     ports:
       - "9100:9100"
+
+  locust:
+    build:
+      context: infra/locust
+      # Docker has a problem that this is relative to context, not the local filesystem.
+      dockerfile: Dockerfile
+    ports:
+      - "8089:8089"
+    volumes:
+      - "./infra/locust:/opt/app"
+    working_dir: "/opt/app"
+    command: "locust -f generate_traffic.py --host http://server:8080"

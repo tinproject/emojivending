@@ -13,7 +13,7 @@ prom-check-config:
 
 .PHONY:
 up:
-	docker-compose up
+	docker-compose up -d
 
 .PHONY:
 down:
@@ -21,11 +21,13 @@ down:
 
 .PHONY:
 run:
-	docker-compose up -d
+	docker-compose up
 
 .PHONY:
 run-debug:
 	FLASK_DEBUG=1 docker-compose up
+
+
 
 # Get resources
 ./emoji/emoji-test.txt:
