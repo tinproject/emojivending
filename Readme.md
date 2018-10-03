@@ -15,3 +15,4 @@ La app expone los siguientes puertos para acceder a los servicios:
 - Grafana: [http://localhost:3000]
 - Prometheus: [http://localhost:9090]
 - Node-Exporter: [http://localhost:9100]
+- Locust: [http://localhost:8089]
