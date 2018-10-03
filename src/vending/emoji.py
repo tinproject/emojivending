@@ -3,7 +3,7 @@ import json
 import random
 import time
 
-import prometheus_client as prom
+import prometheus_client
 
 from . import data
 
@@ -54,9 +54,10 @@ def get_random_category():
     return random.choice(list(categories.keys()))
 
 
-vending_emoji_cooking_duration_hist = prom.Histogram(
+vending_emoji_cooking_duration_hist = prometheus_client.Histogram(
     "vending_emoji_cooking_duration_seconds",
     "Emoji cooking time duration",
+    [],
     buckets=[0.1, 0.3, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.0, 8.0, float("inf")]
 )
 

@@ -1,6 +1,6 @@
 from flask import Flask, Response, render_template, redirect, url_for, abort
 from flask_wtf.csrf import CSRFProtect
-import prometheus_client as prom
+import prometheus_client
 
 from .emoji import categories, get_random_category, request_emoji
 from .forms import GetEmojiForm, SendFeedbackForm
@@ -8,24 +8,26 @@ from .forms import GetEmojiForm, SendFeedbackForm
 csrf = CSRFProtect()
 
 # Metrics definition
-vending_emoji_front_watched_counter = prom.Counter(
+vending_emoji_front_watched_counter = prometheus_client.Counter(
     "vending_emoji_front_watched_total",
-    "Vending machine emoji watched.")
-venging_emoji_requested_counter = prom.Counter(
+    "Vending machine emoji watched.",
+    [])
+venging_emoji_requested_counter = prometheus_client.Counter(
     "vending_emoji_requested_total",
     "Requested emoji.",
     ["category_id", "category_name"])
-venging_emoji_delivered_counter = prom.Counter(
+venging_emoji_delivered_counter = prometheus_client.Counter(
     "vending_emoji_delivered_total",
     "Delivered emoji.",
     ["category_id", "category_name"])
-venging_emoji_feedback_received_counter = prom.Counter(
+venging_emoji_feedback_received_counter = prometheus_client.Counter(
     "vending_emoji_feedback_received_total",
     "Number of feedback received for emoji.",
     ["feedback"])
-vending_emoji_overall_satisfaction_index_gauge = prom.Gauge(
+vending_emoji_overall_satisfaction_index_gauge = prometheus_client.Gauge(
     "vending_emoji_overall_satisfaction_index",
-    "Client overall satisfaction index")
+    "Client overall satisfaction index",
+    [])
 
 
 def create_app():
@@ -41,9 +43,9 @@ def create_app():
 
     @app.route('/metrics')
     def metrics_endpoint():
-        exposition_text = prom.generate_latest()
+        exposition_text = prometheus_client.generate_latest()
 
-        return Response(exposition_text, content_type=prom.CONTENT_TYPE_LATEST)
+        return Response(exposition_text, content_type=prometheus_client.CONTENT_TYPE_LATEST)
 
     @app.route('/')
     def landing():
