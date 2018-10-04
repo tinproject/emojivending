@@ -3,6 +3,7 @@ import json
 import random
 import time
 
+from flask import abort
 import prometheus_client
 
 from . import data
@@ -68,5 +69,21 @@ def request_emoji(category):
 
     time.sleep(random.lognormvariate(0.2, 1))
 
+    if random.random() >= 0.95:
+        abort(500)
+
     emoji = random.choice(emojis)
     return emoji
+
+
+emoji_http_errors = {
+    "400": "🤨",
+    "403": "😱",
+    "404": "😲",
+    "405": "😡",
+    "500": "🤯",
+}
+
+
+def get_emoji_http_errors(errorcode):
+    return emoji_http_errors.get(str(errorcode), "👽")

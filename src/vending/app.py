@@ -1,8 +1,9 @@
 from flask import Flask, Response, render_template, redirect, url_for, abort
+from werkzeug.exceptions import HTTPException
 from flask_wtf.csrf import CSRFProtect
 import prometheus_client
 
-from .emoji import categories, get_random_category, request_emoji
+from .emoji import categories, get_random_category, request_emoji, get_emoji_http_errors
 from .forms import GetEmojiForm, SendFeedbackForm
 
 csrf = CSRFProtect()
@@ -64,7 +65,7 @@ def create_app():
 
         if not emoji_form.validate_on_submit():
             print(emoji_form.is_submitted())
-            abort(500)
+            abort(400)
 
         category_id = emoji_form.category.data
         category_name = categories[category_id]["name"]
@@ -84,7 +85,7 @@ def create_app():
         form = SendFeedbackForm()
 
         if not form.validate_on_submit():
-            abort(500)
+            abort(400)
 
         feedback = form.feedback.data
 
@@ -102,5 +103,14 @@ def create_app():
     @app.route('/emojis')
     def show_emoji():
         return render_template("show_emoji.html.j2", emoji_data=categories)
+
+    @app.errorhandler(HTTPException)
+    def error_handler(error):
+        errorcode = error.code
+        return render_template(
+            "error.html.j2",
+            error_text="Error {}".format(errorcode),
+            error_emoji=get_emoji_http_errors(errorcode)
+        ), int(errorcode)
 
     return app

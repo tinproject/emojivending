@@ -1,0 +1,27 @@
+{% extends "base.html.j2" %}
+
+
+{% block title %}Aquí tienes tu Emoji{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-8 offset-2 text-center align-items-center">
+            <br>
+            <h1>{{ error_text | upper }}</h1>
+            <br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8 offset-2 border border-secondary rounded text-center align-items-center">
+            <br>
+            <br>
+            <h1 class="text-lg-center emoji-big">{{ error_emoji }}</h1>
+            <br>
+        </div>
+    </div>
+
+{% endblock %}
