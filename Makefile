@@ -47,4 +47,4 @@ get-emoji-data: ./src/vending/data/emoji-test.json
 get-statics: ./src/vending/static/NotoColorEmoji.ttf
 
 .PHONY:
-setup: get-emoji-data get-statics
+setup: setup-volumes get-emoji-data get-statics
