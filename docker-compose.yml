@@ -14,17 +14,18 @@ services:
       FLASK_DEBUG: ${FLASK_DEBUG:-0}
 
   grafana:
-    image: "grafana/grafana"
+    image: "grafana/grafana:5.3.2"
     ports:
       - "3000:3000"
     volumes:
     - "./.volumes/grafana/data:/var/lib/grafana"
-    environment:
-      GF_AUTH_ANONYMOUS_ENABLED: "true"
-      GF_AUTH_BASIC_ENABLED: "false"
+#    - "./.volumes/grafana/plugins:/var/lib/grafana/plugins"
+    - "./infra/grafana/provisioning:/etc/grafana/provisioning"
+    env_file:
+      - "./infra/grafana/grafana.env"
 
   prometheus:
-    image: "prom/prometheus"
+    image: "prom/prometheus:v2.5.0"
     ports:
     - "9090:9090"
     volumes:
