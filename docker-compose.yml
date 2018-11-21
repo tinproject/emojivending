@@ -14,7 +14,7 @@ services:
       FLASK_DEBUG: ${FLASK_DEBUG:-0}
 
   grafana:
-    image: "grafana/grafana:5.3.2"
+    image: "grafana/grafana:5.4.0-beta1"
     ports:
       - "3000:3000"
     volumes:
