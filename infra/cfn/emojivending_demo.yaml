@@ -1,0 +1,135 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Launch an EC2 instance for EmojiVending Demo."
+
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: SSH Key to associate to Ec2 Instance
+  InstanceType:
+    Type: String
+    Default: "t2.micro"
+    Description: Instance type
+  InstanceAMI:
+    Type: AWS::EC2::Image::Id
+    Default: "ami-00035f41c82244dab"  # Ubuntu 18.04 on Ireland
+    Description: AMI to launch the image
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC to launch the instance in
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet for the instance
+
+  DnsName:
+    Type: String
+    Default: ""
+    Description: DNS name for the instance
+  HostedZoneId:
+    Type: String
+    Default: ""
+    Description: Route 53 Hosted Zone Id that will store the dns record
+
+
+Conditions:
+  HasDns:
+    Fn::Not:
+      - Fn::Equals:
+          - !Ref HostedZoneId
+          - ""
+
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VpcId
+      GroupDescription: Security Group for EmojiVending instance
+      SecurityGroupIngress:
+        - Description: Allow SSH access
+          IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: '0.0.0.0/0'
+        - Description: Allow access to EmojiVending
+          IpProtocol: tcp
+          FromPort: '8080'
+          ToPort: '8080'
+          CidrIp: '0.0.0.0/0'
+        - Description: Allow access to Grafana
+          IpProtocol: tcp
+          FromPort: '3000'
+          ToPort: '3000'
+          CidrIp: '0.0.0.0/0'
+        - Description: Allow access to Prometheus
+          IpProtocol: tcp
+          FromPort: '9090'
+          ToPort: '9090'
+          CidrIp: '0.0.0.0/0'
+      Tags:
+        - Key: project
+          Value: emojivending
+
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref KeyName
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref InstanceAMI
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      UserData: !Base64 |
+        #!/bin/bash -xe
+
+        export END_USER=ubuntu
+        export INSTALL_FOLDER=/opt/apps
+
+        # Install Docker
+        apt-get update
+        apt-get -yy install apt-transport-https ca-certificates curl software-properties-common wget pwgen git make
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        apt-get update && apt-get -y install docker-ce
+
+        # Install Docker Compose
+        curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
+
+        # Allow end user to run Docker commands
+        usermod -aG docker $END_USER
+
+        # Download app
+        mkdir -p "${INSTALL_FOLDER}"
+        cd "${INSTALL_FOLDER}" && git clone https://github.com/tinproject/emojivending.git
+        chmod 777 "${INSTALL_FOLDER}"
+        chown -R "${END_USER}:${END_USER}" "${INSTALL_FOLDER}/emojivending"
+
+        #symlink python3 for sshuttle and others
+        ln -s /usr/bin/python3 /usr/bin/python
+
+      Tags:
+        - Key: project
+          Value: emojivending
+
+  DnsRecord:
+    Type: AWS::Route53::RecordSet
+    Condition: HasDns
+    Properties:
+      Name: !Ref DnsName
+      HostedZoneId: !Ref HostedZoneId
+      Type: A
+      TTL: '60'
+      ResourceRecords:
+        - !GetAtt Ec2Instance.PublicIp
+
+
+Outputs:
+  Ec2InstancePrivateIP:
+    Value: !GetAtt Ec2Instance.PrivateIp
+    Description: Private Ip of the instance
+  Ec2InstancePublicIP:
+    Value: !GetAtt Ec2Instance.PublicIp
+    Description: Public Ip of the instance
+  DnsName:
+    Value: !Ref DnsName
+    Description: DNS record name for the instance
