@@ -1,6 +1,6 @@
 import random
 
-from locust import HttpLocust, TaskSet, task
+from locust import HttpUser, TaskSet, task, between
 
 
 class BuyEmoji(TaskSet):
@@ -26,7 +26,6 @@ class BuyEmoji(TaskSet):
         self.client.post("/send-feedback", data=data)
 
 
-class WebsiteUser(HttpLocust):
-    task_set = BuyEmoji
-    min_wait = 1000
-    max_wait = 8000
+class WebsiteUser(HttpUser):
+    tasks = [BuyEmoji]
+    wait_time = between(1, 8)

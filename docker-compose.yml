@@ -2,7 +2,7 @@
 version: '3.5'
 services:
   server:
-    image: "python:3.7"
+    image: "python:3.8"
     ports:
       - "8080:8080"
     volumes:
@@ -14,7 +14,7 @@ services:
       FLASK_DEBUG: ${FLASK_DEBUG:-0}
 
   grafana:
-    image: "grafana/grafana:5.4.0-beta1"
+    image: "grafana/grafana:7.1.0"
     ports:
       - "3000:3000"
     volumes:
@@ -25,7 +25,7 @@ services:
       - "./infra/grafana/grafana.env"
 
   prometheus:
-    image: "prom/prometheus:v2.5.0"
+    image: "prom/prometheus:v2.19.2"
     ports:
     - "9090:9090"
     volumes:
